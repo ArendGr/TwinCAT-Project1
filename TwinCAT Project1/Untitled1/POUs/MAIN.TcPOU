@@ -3,13 +3,19 @@
   <POU Name="MAIN" Id="{9eadf995-eec4-4666-bc62-ee440695cb18}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
+	teller : int := 0;
 END_VAR
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[GVL.lamp := gvl.knop;]]></ST>
+      <ST><![CDATA[GVL.lamp := gvl.knop;
+teller := teller + 1;
+gvl.lamp2 := teller.6;
+]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
       <LineId Id="2" Count="0" />
+      <LineId Id="8" Count="1" />
+      <LineId Id="7" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>
