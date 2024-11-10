@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="VeranderLicht" Id="{415282d1-ffdf-458e-b9ba-dbf4956d2277}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION VeranderLicht : VerkeerslichtStatus
+VAR_INPUT
+	StoplichtWissel	: VerkeerslichtStatus;
+END_VAR
+
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+CASE StoplichtWissel OF
+    VerkeerslichtStatus.Rood:
+        VeranderLicht := VerkeerslichtStatus.Groen;   // Van Rood naar Groen
+		
+    VerkeerslichtStatus.Groen:
+        VeranderLicht := VerkeerslichtStatus.Geel;  // Van Groen naar Geel
+		
+    VerkeerslichtStatus.Geel:
+        VeranderLicht := VerkeerslichtStatus.Rood;    // Van Geel naar Rood
+		
+ELSE
+    VeranderLicht := VerkeerslichtStatus.Rood;      // bij default moet het naar Rood
+END_CASE]]></ST>
+    </Implementation>
+    <LineIds Name="VeranderLicht">
+      <LineId Id="18" Count="0" />
+      <LineId Id="9" Count="2" />
+      <LineId Id="19" Count="0" />
+      <LineId Id="12" Count="1" />
+      <LineId Id="20" Count="0" />
+      <LineId Id="14" Count="1" />
+      <LineId Id="21" Count="0" />
+      <LineId Id="16" Count="1" />
+      <LineId Id="7" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

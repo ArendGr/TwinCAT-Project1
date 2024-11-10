@@ -3,19 +3,36 @@
   <POU Name="MAIN" Id="{9eadf995-eec4-4666-bc62-ee440695cb18}" SpecialFunc="None">
     <Declaration><![CDATA[PROGRAM MAIN
 VAR
-	teller : int := 0;
+	VeranderLicht: INT;
+	StoplichtStatus: INT;
+	StoplichtWissel: ENUM;
+	Rood: INT;
+	Groen: INT;
+	Geel: INT;
+	Entry1 : BOOL := TRUE;
 END_VAR
+
+
 ]]></Declaration>
     <Implementation>
-      <ST><![CDATA[GVL.lamp := gvl.knop;
-teller := teller + 1;
-gvl.lamp2 := teller.6;
-]]></ST>
+      <ST><![CDATA[
+IF  Entry1 THEN
+    // Initialiseer alle verkeerslichtstatussen naar Rood
+    GVL.LichtStatusR := Rood;
+    GVL.LichtStatusL := Rood;
+    Entry1 := FALSE;  // Voorkom dat de initialisatie elke cyclus herhaald wordt
+END_IF;
+
+VerkeerslichtR();
+VerkeerslichtL();]]></ST>
     </Implementation>
     <LineIds Name="MAIN">
-      <LineId Id="2" Count="0" />
-      <LineId Id="8" Count="1" />
-      <LineId Id="7" Count="0" />
+      <LineId Id="14" Count="0" />
+      <LineId Id="104" Count="4" />
+      <LineId Id="47" Count="0" />
+      <LineId Id="121" Count="0" />
+      <LineId Id="46" Count="0" />
+      <LineId Id="122" Count="0" />
     </LineIds>
   </POU>
 </TcPlcObject>

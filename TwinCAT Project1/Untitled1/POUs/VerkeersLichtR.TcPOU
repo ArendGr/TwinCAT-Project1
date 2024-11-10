@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="VerkeersLichtR" Id="{6b3d4ad0-f3f9-4c2c-9fe5-74f1d2e9b24b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM VerkeersLichtR
+VAR
+	HuidigeStatus : VerkeerslichtStatus := VerkeerslichtStatus.Rood; //Start met rood
+    Timer1 : TON; 
+END_VAR]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF GVL.AutoR THEN //Als er een auto bij het stoplicht staat (de knop naast de lichten)
+    CASE HuidigeStatus OF
+        VerkeerslichtStatus.Rood:
+            Timer1(IN := TRUE, PT := GVL.TijdRood);
+            IF Timer1.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer1(IN := FALSE);
+				
+				GVL.GroenR := FALSE;
+            	GVL.GeelR := FALSE;
+            	GVL.RoodR := TRUE;   // Zet Rood licht aan
+
+            END_IF
+        VerkeerslichtStatus.Groen:
+            Timer1(IN := TRUE, PT := GVL.TijdGroen);
+            IF Timer1.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer1(IN := FALSE);
+				
+				GVL.GroenR := TRUE;   // Zet Groen licht aan
+            	GVL.GeelR := FALSE;
+           		GVL.RoodR := FALSE;
+				
+            END_IF
+        VerkeerslichtStatus.Geel:
+            Timer1(IN := TRUE, PT := GVL.TijdGeel);
+            IF Timer1.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer1(IN := FALSE);
+				
+				GVL.GroenR := FALSE;
+           		GVL.GeelR := TRUE;    // Zet Geel licht aan
+            	GVL.RoodR := FALSE;
+            END_IF
+    END_CASE
+ELSE
+    // Als er geen auto aankomt, gaat het verkeerslicht op rood
+    HuidigeStatus := VerkeerslichtStatus.Rood;
+    GVL.GroenR := FALSE;
+    GVL.GeelR := FALSE;
+    GVL.RoodR := TRUE;
+END_IF
+
+GVL.LichtStatusR := HuidigeStatus; // Dit zorgt ervoor dat de GVL wordt ge-update]]></ST>
+    </Implementation>
+    <LineIds Name="VerkeersLichtR">
+      <LineId Id="13" Count="2" />
+      <LineId Id="40" Count="4" />
+      <LineId Id="58" Count="0" />
+      <LineId Id="63" Count="2" />
+      <LineId Id="62" Count="0" />
+      <LineId Id="45" Count="5" />
+      <LineId Id="66" Count="0" />
+      <LineId Id="71" Count="1" />
+      <LineId Id="67" Count="0" />
+      <LineId Id="70" Count="0" />
+      <LineId Id="51" Count="5" />
+      <LineId Id="73" Count="0" />
+      <LineId Id="75" Count="1" />
+      <LineId Id="74" Count="0" />
+      <LineId Id="33" Count="2" />
+      <LineId Id="77" Count="3" />
+      <LineId Id="36" Count="2" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>

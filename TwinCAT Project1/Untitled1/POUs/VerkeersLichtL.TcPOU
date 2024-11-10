@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4024.12">
+  <POU Name="VerkeersLichtL" Id="{d17e2774-5a14-4eee-8602-de6dda8cfc0b}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM VerkeersLichtL
+VAR
+	HuidigeStatus : VerkeerslichtStatus := VerkeerslichtStatus.Rood; //Start met rood
+    Timer2 : TON; 
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[
+IF GVL.AutoL THEN //Als er een auto bij het stoplicht staat (de knop naast de lichten)
+    CASE HuidigeStatus OF
+        VerkeerslichtStatus.Rood:
+            Timer2(IN := TRUE, PT := GVL.TijdRood);
+            IF Timer2.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer2(IN := FALSE);
+				
+				GVL.GroenL := FALSE;
+            	GVL.GeelL := FALSE;
+            	GVL.RoodL := TRUE;   // Zet Rood licht aan
+
+            END_IF
+        VerkeerslichtStatus.Groen:
+            Timer2(IN := TRUE, PT := GVL.TijdGroen);
+            IF Timer2.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer2(IN := FALSE);
+				
+				GVL.GroenL := TRUE;   // Zet Groen licht aan
+            	GVL.GeelL := FALSE;
+           		GVL.RoodL := FALSE;
+				
+            END_IF
+        VerkeerslichtStatus.Geel:
+            Timer2(IN := TRUE, PT := GVL.TijdGeel);
+            IF Timer2.Q THEN
+                HuidigeStatus := VeranderLicht(HuidigeStatus);
+                Timer2(IN := FALSE);
+				
+				GVL.GroenL := FALSE;
+           		GVL.GeelL := TRUE;    // Zet Geel licht aan
+            	GVL.RoodL := FALSE;
+            END_IF
+    END_CASE
+ELSE
+    // Als er geen auto aankomt, gaat het verkeerslicht op rood
+    HuidigeStatus := VerkeerslichtStatus.Rood;
+    GVL.GroenL := FALSE;
+    GVL.GeelL := FALSE;
+    GVL.RoodL := TRUE;
+END_IF
+
+GVL.LichtStatusL := HuidigeStatus; // Dit zorgt ervoor dat de GVL wordt ge-update]]></ST>
+    </Implementation>
+    <LineIds Name="VerkeersLichtL">
+      <LineId Id="8" Count="43" />
+      <LineId Id="5" Count="0" />
+    </LineIds>
+  </POU>
+</TcPlcObject>
